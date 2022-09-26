@@ -1,5 +1,5 @@
-const {test } = require('../controllers/user')
+const {verifyToken } = require('../controllers/user')
 
 module.exports = (router) => {
-    router.post("/usertest", test)
+    router.post("/user/:id", verifyToken)
 }
