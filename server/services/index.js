@@ -6,4 +6,8 @@ const Product = require('./product')
 
 module.exports = {
     Auth,
+    Cart,
+    Order,
+    User,
+    Product
 }

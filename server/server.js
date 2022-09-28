@@ -13,7 +13,7 @@ mongoose.connect(
     ).then(() => console.log("connection successful")).catch((err) => console.log(err))
 
 app.listen(process.env.PORT || 3000, () => {
-    console.log("listening at port 3000")
+    console.log(`listening at port ${process.env.PORT || 3000}`)
 })
 
 app.use(express.json())

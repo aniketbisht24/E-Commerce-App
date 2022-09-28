@@ -1,54 +1,98 @@
-const jwt = require('jsonwebtoken')
+const { verifyTokenAndAuthenticate } = require('./verifyToken')
+const { User: UserService } = require('../services')
+const { patch: patchSchema, remove: removeSchema } = require('../dto-schemas/user')
+const Validator = require('../utils/validator')
 
-const verifyToken = async (req, res, next) => {
+const patch = async (req, res) => {
     try {
-        const { headers: { authorization }, params: {id} } = req;
+        const { user, body: { username, password } } = req;
 
-        if (authorization) {
-            const token = authorization.split(' ').slice(1);
+        const data = { username, password, ...user }
 
-            const result = jwt.verify(token[0], process.env.JWT_SEC)
+        const { errors: validateErrors, data: validData } = Validator.isSchemaValid({ data, schema: patchSchema })
 
-            if(result.id === id){
-                req.user = result;
-    
-                return next();
-            }
-            res.status(401).json("Incorrect Id");
+        if (validateErrors) {
+            res.status(400).json(validateErrors);
         }
 
-        res.status(401).json("You aren't authenticated");
+        const { errors, doc } = await UserService.patch(validData);
 
-    } catch (error) {
+        if (errors) {
+            res.status(404).json(errors);
+        }
+
+        res.status(201).json(doc)
+    }
+    catch (error) {
         res.status(500).json({ errors: error })
     }
 }
 
-const verifyAuthorization = async (req, res, next) => {
+const remove = async (req, res) => {
     try {
-        const { headers: { authorization } } = req;
+        const { params: { id } } = req;
 
-        if (authorization) {
-            const token = authorization.split(' ').slice(1);
+        const { errors: validateErrors, data: validData } = Validator.isSchemaValid({ data, schema: removeSchema })
 
-            const result = jwt.verify(token[0], process.env.JWT_SEC, (err, user) => {
-                if(err){
-                    res.status(403).json("Token is expired")
-                }
-
-                req.user = user;
-            })
-            next();
+        if (validateErrors) {
+            res.status(400).json(validateErrors);
         }
 
-        res.status(401).json("You aren't authenticated");
+        const { errors, doc } = await UserService.remove(validData);
 
-    } catch (error) {
+        if (errors) {
+            res.status(404).json(errors);
+        }
+
+        res.status(200).json(doc)
+    }
+    catch (error) {
+        res.status(500).json({ errors: error })
+    }
+
+}
+
+const getById = async (req, res) => {
+    try {
+        const { params: { id } } = req;
+
+        const { errors: validateErrors, data: validData } = Validator.isSchemaValid({ data, schema: removeSchema })
+
+        if (validateErrors) {
+            res.status(400).json(validateErrors);
+        }
+
+        const { errors, doc } = await UserService.getById(validData);
+
+        if (errors) {
+            res.status(404).json(errors);
+        }
+
+        res.status(200).json(doc)
+    }
+    catch (error) {
+        res.status(500).json({ errors: error })
+    }
+}
+
+const get = async (req, res) => {
+    try {
+        const { errors, doc } = await UserService.get();
+
+        if (errors) {
+            res.status(404).json(errors);
+        }
+
+        res.status(200).json(doc)
+    }
+    catch (error) {
         res.status(500).json({ errors: error })
     }
 }
 
 module.exports = {
-    verifyToken,
-    verifyAuthorization
+    patch,
+    remove,
+    getById,
+    get
 }
