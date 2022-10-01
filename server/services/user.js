@@ -38,7 +38,7 @@ const getById = async (payload) => {
     try {
         const res = await User.findById(id);
 
-        const {password, ...doc} = res
+        const {_doc: {password, ...doc}} = res
 
         return { doc }
     }
@@ -47,15 +47,37 @@ const getById = async (payload) => {
     }
 }
 
-
 const get = async (payload) => {
     try {
-        const users = await User.find();
+        const {limit, offset } = payload;
+
+        const users = await User.find({limit, offset});
 
         const doc = users.map((user) => {
-            const {password, ...result} = user;
+            const {_doc: {password, ...result}} = user;
 
-            return {result};
+            return {...result};
+        })
+
+        return { doc }
+    }
+    catch (error) {
+        throw ('transaction failed')
+    }
+}
+
+const getStats = async (payload) => {
+    try {
+        const date = new Date();
+
+        const lastYear = new Date(date.getFullYear) - 1;
+
+        const users = await User.find({limit, offset});
+
+        const doc = users.map((user) => {
+            const {_doc: {password, ...result}} = user;
+
+            return {...result};
         })
 
         return { doc }
@@ -69,5 +91,6 @@ module.exports = {
     patch,
     remove,
     getById,
-    get
+    get,
+    getStats
 }

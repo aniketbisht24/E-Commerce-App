@@ -1,7 +1,7 @@
 const patch = require('./patch')
-const remove = require('./remove')
+const getById = require('./get-by-id')
 
 module.exports = {
     patch,
-    remove
+    getById
 }

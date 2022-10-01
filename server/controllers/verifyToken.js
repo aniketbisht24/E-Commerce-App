@@ -31,7 +31,7 @@ const verifyTokenAndAdmin = async (req, res, next) => {
         if (authorization) {
             const token = authorization.split(' ')[1];
 
-            const result = jwt.verify(token[0], process.env.JWT_SEC)
+            const result = jwt.verify(token, process.env.JWT_SEC)
 
             if (result.isAdmin) {
                 req.user = result;

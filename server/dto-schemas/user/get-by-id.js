@@ -1,4 +1,4 @@
-const remove = {
+const getById = {
     title: 'login authentication of user',
     description: 'A HTTP POST Request',
     type: 'object',
@@ -11,4 +11,4 @@ const remove = {
     required: ['id'],
 }
 
-module.exports = remove
+module.exports = getById
