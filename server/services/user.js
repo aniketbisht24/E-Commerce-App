@@ -38,7 +38,7 @@ const getById = async (payload) => {
     try {
         const res = await User.findById(id);
 
-        const {_doc: {password, ...doc}} = res
+        const { _doc: { password, ...doc } } = res
 
         return { doc }
     }
@@ -49,14 +49,14 @@ const getById = async (payload) => {
 
 const get = async (payload) => {
     try {
-        const {limit, offset } = payload;
+        const { limit, offset } = payload;
 
-        const users = await User.find({limit, offset});
+        const users = await User.find({ limit, offset });
 
         const doc = users.map((user) => {
-            const {_doc: {password, ...result}} = user;
+            const { _doc: { password, ...result } } = user;
 
-            return {...result};
+            return { ...result };
         })
 
         return { doc }
@@ -70,16 +70,24 @@ const getStats = async (payload) => {
     try {
         const date = new Date();
 
-        const lastYear = new Date(date.getFullYear) - 1;
+        const lastYear = new Date(date.setFullYear(date.getFullYear) - 1);
 
-        const users = await User.find({limit, offset});
-
-        const doc = users.map((user) => {
-            const {_doc: {password, ...result}} = user;
-
-            return {...result};
-        })
-
+        const doc = await User.aggregate([
+            { $match: { "createdAt": { $gte: lastYear } } },
+            {  
+                $project: {
+                    month: {$month: "$createdAt"}
+                },
+            },
+            {
+                $group: {
+                    _id: "$month",
+                    total: {$sum: 1},
+                }
+            }
+        ]
+        );
+        
         return { doc }
     }
     catch (error) {

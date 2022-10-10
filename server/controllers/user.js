@@ -98,7 +98,7 @@ const get = async (req, res) => {
 
 const getStats = async (req, res) => {
     try {
-        const { errors, doc } = await UserService.getStats({limit, offset});
+        const { errors, doc } = await UserService.getStats();
 
         if (errors) {
             res.status(404).json(errors);
