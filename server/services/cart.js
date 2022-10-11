@@ -2,7 +2,6 @@ const Cart = require('../models/Cart')
 
 const save = async (payload) => {
     try {
-
         const newCart = new Cart({ ...payload });
 
         await newCart.save();
@@ -49,11 +48,13 @@ const getByUserId = async (payload) => {
     try {
         const {userId} = payload;
         
-        const doc = await Carts.find({
+        const doc = await Carts.findOne({
             userId
         });
 
-        return { doc }
+        const {_doc} = doc;
+
+        return { doc: _doc }
     }
     catch (error) {
         throw ('transaction failed')
