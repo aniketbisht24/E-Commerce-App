@@ -72,10 +72,10 @@ const Register = () => {
                     </Agreement>
 
                     <Button> CREATE </Button>
-                </Form> 
+                </Form>
             </Wrapper>
         </Container>
     );
 }
- 
-export default Register;
+
+export { Register };

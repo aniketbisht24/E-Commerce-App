@@ -72,7 +72,7 @@ const getByUserId = async (req, res) => {
     try {
         const { params: { id } } = req;
 
-        const { errors: validateErrors, data: validData } = Validator.isSchemaValid({ data: {id}, schema: getByIdSchema })
+        const { errors: validateErrors, data: validData } = Validator.isSchemaValid({ data: { id }, schema: getByIdSchema })
 
         if (validateErrors) {
             res.status(400).json(validateErrors);
@@ -105,8 +105,8 @@ const getAll = async (req, res) => {
 }
 
 const getIncome = async (req, res) => {
-    try{
-        const {errors, doc} = await OrderService.getIncome();
+    try {
+        const { errors, doc } = await OrderService.getIncome();
 
         if (errors) {
             res.status(404).json(errors);
@@ -118,11 +118,46 @@ const getIncome = async (req, res) => {
     }
 }
 
+const payment = async (req, res) => {
+    try {
+        const { body: { tokenId, amount } } = req;
+
+        const { errors, doc } = await OrderService.payment({tokenId, amount});
+
+        if (errors) {
+            res.status(404).json(errors);
+        }
+
+        res.status(201).json(doc)
+    } catch (error) {
+        res.status(500).json({ errors: error })
+    }
+}
+
+const check = async (req, res) => {
+    try {
+        const { body: { tokenId, amount } } = req;
+
+        const { errors, doc } = await OrderService.payment({tokenId, amount});
+
+        if (errors) {
+            res.status(404).json(errors);
+        }
+
+        res.status(201).json(doc)
+    } catch (error) {
+        res.status(500).json({ errors: error })
+    }
+}
+
+
 module.exports = {
     save,
     patch,
     remove,
     getByUserId,
     getAll,
-    getIncome
+    getIncome,
+    payment,
+    check
 }

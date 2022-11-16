@@ -8,18 +8,18 @@ import Products from '../components/Products'
 import Slider from '../components/Slider'
 
 const Home = () => {
-  
+
   return (
     <div>
-        <Announcement />
-        <Navbar />
-        <Slider />
-        <Categories />
-        <Products />
-        <NewsLetter />
-        <Footer />
+      <Announcement />
+      <Navbar />
+      <Slider />
+      <Categories />
+      <Products />
+      <NewsLetter />
+      <Footer />
     </div>
   )
 }
 
-export default Home
+export { Home }

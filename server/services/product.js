@@ -97,7 +97,7 @@ const getAllProducts = async (payload) => {
             return { doc: newDoc }
         }
     
-        const doc = await Products.find();
+        const doc = await Product.find();
 
         const newDoc = doc.map((element) => {
             const {_doc} = element;

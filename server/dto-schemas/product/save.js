@@ -16,10 +16,10 @@ const save = {
             type: 'array',
         },
         size: {
-            type: 'string',
+            type: 'array',
         },
         color: {
-            type: 'string',
+            type: 'array',
         },
         price: {
             type: 'number',

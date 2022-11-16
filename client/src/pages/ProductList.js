@@ -4,6 +4,8 @@ import Announcement from '../components/Announcement'
 import Products from '../components/Products'
 import Newsletter from '../components/NewsLetter'
 import Footer from '../components/Footer'
+import { useLocation } from 'react-router-dom';
+import { useState } from 'react';
 
 const Container = styled.div`
 `
@@ -35,10 +37,30 @@ const Option = styled.option`
 `
 
 const ProductList = () => {
+    const location = useLocation()
+
+    const cat = location.pathname.split('/')[2];
+
+    const [filters, setFilters] = useState({});
+    const [sort, setSort] = useState('newest');
+
+    const handleFilters = (e) => {
+        const value = e.target.value;
+        
+        setFilters(prev => ({
+            ...prev, [e.target.name]: value
+        }))
+    }
+
+    const handleSort = (e) => {
+        const value = e.target.value;
+        setSort(prev => value)
+    }
+
     return (
         <Container>
             <Navbar />
-            <Announcement />
+             <Announcement />
 
             <Title> Dresses </Title>
 
@@ -48,33 +70,33 @@ const ProductList = () => {
                         Filter Products:  
                     </FilterText>
 
-                    <Select>
-                        <Option disabled selected>
+                    <Select name="color" onChange={handleFilters}>
+                        <Option selected disabled>
                             Color
                         </Option>
 
-                        <Option> White </Option>
-                        <Option> Black </Option>
-                        <Option> Red </Option>
-                        <Option> Blue </Option>
-                        <Option> Yellow </Option>
-                        <Option> Green </Option>
+                        <Option value="white"> White </Option>
+                        <Option value="black"> Black </Option>
+                        <Option value="red"> Red </Option>
+                        <Option value="blue"> Blue </Option>
+                        <Option value="yellow"> Yellow </Option>
+                        <Option value="green"> Green </Option>
 
                     </Select>
 
-                    <Select>
-                        <Option disabled selected>
+                    <Select name="size" onChange={handleFilters}>
+                        <Option selected disabled>
                             Size
                         </Option>
 
-                        <Option> XS </Option>
-                        <Option> S </Option>
-                        <Option> M </Option>
-                        <Option> L</Option>
-                        <Option> XL </Option>
-                        <Option> XXL </Option>
+                        <Option value = "XS"> XS </Option>
+                        <Option value = "S"> S </Option>
+                        <Option value = "M"> M </Option>
+                        <Option value = "L"> L</Option>
+                        <Option value = "XL"> XL </Option>
+                        <Option value = "XXL"> XXL </Option>
 
-                    </Select>
+                     </Select>
                 </Filter>
 
                 <Filter> 
@@ -82,19 +104,19 @@ const ProductList = () => {
                         Sort Products: 
                     </FilterText>
 
-                    <Select>
-                            <Option disabled selected>
+                    <Select name="sort" onChange={handleSort}>
+                            <Option selected value="newest">
                                 Newest
                             </Option>
 
-                            <Option> Price (asc) </Option>
-                            <Option> Price (desc) </Option>
+                            <Option value="asc"> Price (asc) </Option>
+                            <Option value="desc"> Price (desc) </Option>
                      </Select>
 
                 </Filter>
             </FilterContainer>
 
-            <Products />
+            <Products cat = {cat} filters = {filters} sort = {sort}/>
 
             <Newsletter />
 
@@ -104,4 +126,4 @@ const ProductList = () => {
     );
 }
  
-export default ProductList;
+export { ProductList };

@@ -1,5 +1,6 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import {mobile} from '../responsive'
+import { mobile } from '../responsive'
 
 const Container = styled.div`
     flex: 1;
@@ -12,7 +13,7 @@ const Image = styled.img`
     width: 100%;
     height: 100%;
     object-fit: cover;
-    ${mobile({height: "30vh"})}
+    ${mobile({ height: "30vh" })}
 `
 
 const Info = styled.div`
@@ -40,19 +41,19 @@ const Button = styled.button`
    cursor: pointer;
    font-weight : 600;
 `
-const CategoryItem = ({category}) => {
+const CategoryItem = ({ category }) => {
     return (
         <Container>
-            {console.log(category)}
-            <Image src= {category.img} />
-            <Info >
-                <Title> {category.title}</Title>
-                <Button> Shop Now </Button>
-            </Info>
 
-            HELLO
-        </Container>
+                <Link to={`/products/${category.cat}`} >
+                    <Image src={category.img} />
+                    <Info >
+                        <Title> {category.title}</Title>
+                        <Button> Shop Now </Button>
+                    </Info>
+                </Link>
+        </Container >
     );
 }
- 
+
 export default CategoryItem;

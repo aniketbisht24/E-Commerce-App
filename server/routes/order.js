@@ -1,5 +1,5 @@
-const { verifyTokenAndAuthenticate, verifyTokenAndAdmin } = require('../controllers/verifyToken')
-const { save, patch, remove, getAll, getByUserId, getIncome } = require('../controllers/order')
+const { verifyTokenAndAuthenticate, verifyTokenAndAdmin,  } = require('../controllers/verifyToken')
+const { save, patch, remove, getAll, getByUserId, getIncome, payment, check } = require('../controllers/order')
 
 module.exports = (router) => {
     router.post('/order/save', verifyTokenAndAuthenticate, save)
@@ -8,4 +8,6 @@ module.exports = (router) => {
     router.get('/order/:id', verifyTokenAndAuthenticate, getByUserId);
     router.get('/order', verifyTokenAndAdmin, getAll)
     router.get('/order/income', verifyTokenAndAdmin, getIncome)
+    router.post('/order/payment', payment)
+    router.use('/order/payment/status', check)
 }
