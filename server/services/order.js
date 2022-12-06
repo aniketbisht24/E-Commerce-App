@@ -1,5 +1,5 @@
 const Order = require('../models/Order')
-const stripe = require('stripe')('sk_test_51Lrla9SDouCeI2CDkpnm0GXskoe752q3aiNvbB0O9pEoGrv5r7hkGSBlLR3JyxpMQSvBakSYVpciFIaY5Gdm6EXI00kgqB8J9v')
+const stripe = require('stripe')(process.env.STRIPE_KEY)
 
 const save = async (payload) => {
     try {
@@ -104,13 +104,13 @@ const getIncome = async (payload) => {
             },
         ])
 
-        // const newDoc = doc.map((element) => {
-        //     const { _doc } = element;
+        const newDoc = doc.map((element) => {
+            const { _doc } = element;
 
-        //     return { ..._doc }
-        // })
+            return { ..._doc }
+        })
 
-        // return { doc: newDoc }
+        return { doc: newDoc }
 
     }
     catch (error) {
@@ -121,14 +121,6 @@ const getIncome = async (payload) => {
 const payment = async (payload) => {
     try {
         const { tokenId, amount} = payload
-
-        // const res = await stripe.paymentIntents.create(
-        //     {
-        //         source: tokenId,
-        //         amount,
-        //         currency: "inr",
-        //         payment_method_types: ['card'],
-        //     })
 
         const session = await stripe.checkout.sessions.create({
             line_items: [
@@ -144,8 +136,8 @@ const payment = async (payload) => {
               },
             ],
             mode: 'payment',
-            success_url: 'http://localhost:3000/payment-success',
-            cancel_url: 'http://localhost:3000/payment-cancel',
+            success_url: `${process.env.DOMAIN}/payment-success`,
+            cancel_url: `${process.env.DOMAIN}/payment-cancel`,
           });
 
         return {doc: session}
