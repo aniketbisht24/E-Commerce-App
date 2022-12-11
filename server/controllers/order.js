@@ -120,9 +120,9 @@ const getIncome = async (req, res) => {
 
 const payment = async (req, res) => {
     try {
-        const { body: { tokenId, amount } } = req;
+        const { body: { line_items: lineItems } } = req;
 
-        const { errors, doc } = await OrderService.payment({tokenId, amount});
+        const { errors, doc } = await OrderService.payment({lineItems});
 
         if (errors) {
             res.status(404).json(errors);

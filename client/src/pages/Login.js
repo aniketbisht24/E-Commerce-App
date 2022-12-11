@@ -58,6 +58,7 @@ const Link = styled.a `
 `
 
 const Login = () => {
+    const [userName ]
     return (
         <Container>
             <Wrapper>

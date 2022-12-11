@@ -1,12 +1,12 @@
 import { useLocation } from "react-router-dom"
 
-const Success = () => {
+const Failed = () => {
     const location = useLocation();
 
     console.log('location', location);
     return (
-        <div>Successfull</div>
+        <div>Payment Failed</div>
     )
 }
 
-export {Success}
+export {Failed}

@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { ProductList, Product, Cart, Login, Register, Home } from "./pages";
-import Success from "./pages/Success";
+import { ProductList, Product, Cart, Login, Register, Home, 
+    Success, Failed } from "./pages";
 
 const Router = () => {
     const user = true;
@@ -12,7 +12,9 @@ const Router = () => {
             <Route path="/cart" element={<Cart />} />
             <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
             <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
-            <Route path="/success" element = {<Success />} />
+            <Route path="/payment-success" element = {<Success />} />
+            <Route path="/payment-failed" element = {<Failed />} />
+
         </Routes>
     );
 }

@@ -16,8 +16,7 @@ const save = async (payload) => {
 
 const patch = async (payload) => {
     try {
-
-        const updatedOrder = await Order.findByIdAndUpdate(
+        await Order.findByIdAndUpdate(
             id,
             {
                 $set: data,
@@ -120,29 +119,18 @@ const getIncome = async (payload) => {
 
 const payment = async (payload) => {
     try {
-        const { tokenId, amount} = payload
+        const { lineItems} = payload
 
         const session = await stripe.checkout.sessions.create({
-            line_items: [
-              {
-                price_data: {
-                  currency: 'inr',
-                  product_data: {
-                    name: 'T-shirt',
-                  },
-                  unit_amount: 2000,
-                },
-                quantity: 1,
-              },
-            ],
+            line_items: lineItems,
             mode: 'payment',
-            success_url: `${process.env.DOMAIN}/payment-success`,
-            cancel_url: `${process.env.DOMAIN}/payment-cancel`,
+            success_url: `${process.env.CLIENT_DOMAIN}/payment-success`,
+            cancel_url: `${process.env.CLIENT_DOMAIN}/payment-failed`,
           });
 
-        return {doc: session}
+          const {id} = session
 
-
+        return {doc: {sessionId: id}}
     }
     catch (error) {
         throw ('transaction failed')

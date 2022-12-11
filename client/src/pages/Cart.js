@@ -5,9 +5,7 @@ import { useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { userRequest } from '../httpRequest';
 import { useNavigate } from "react-router-dom";
-// const stripe = require('stripe')(process.env.REACT_APP_STRIPE_SECRET)
-
-// const PublishableKey = process.env.REACT_APP_PUBLISHABLE_SECRET;
+import { useStripe } from '@stripe/react-stripe-js'
 
 const Container = styled.div`
 
@@ -93,7 +91,6 @@ const ProductSize = styled.span`
 
 `
 
-
 const PriceDetail = styled.div`
     flex: 1;
     display: flex;
@@ -101,7 +98,6 @@ const PriceDetail = styled.div`
     justify-content: center;
     flex-direction: column;
 `
-
 
 const ProductAmountContainer = styled.div`
     display: flex;
@@ -164,31 +160,43 @@ const Button = styled.button`
 const Cart = () => {
     const cart = useSelector(state => state.cart)
 
-    const [stripeToken, setStripeToken] = useState(null)
+    const stripe = useStripe();
 
-    const history = useNavigate()
+    const handleCheckout = async(e) =>{
+        e.preventDefault();
 
-    const onToken = (token) => {
-        setStripeToken(token)
-    }
-
-    useEffect(() => {
-        const stripeRequest = async() => {
-            try{
-                const res = await userRequest.post('/order/payment', {
-                    tokenId: stripeToken.id,
-                    amount: 100,
-                })
-                console.log("res", res)
-                history.push("/success", {data: res.data})
-                console.log('done')
-            }
-            catch{}
+        if(cart.total < 1){
+            alert('No Items Added in Cart');
+            return
         }
+        
+        const Items =cart.products.map((product) => {
+            return {
+                 quantity: product.quantity,
+                 price_data: {
+                    currency: 'inr',
+                    unit_amount: product.price * 1000,
+                    product_data: {
+                        name: product.title,
+                        description: product.desc,
+                        images: [product.img],
+                    }
+                 }
+            }
+        })
 
-        stripeToken && cart.total >=1 && stripeRequest()
-    }, [stripeToken, cart.total, history])
+        const res = await userRequest.post('/order/payment', {
+            line_items: Items
+        })
 
+        const { error } = await stripe.redirectToCheckout({
+            sessionId: res.data
+        })
+
+        if(error){
+            console.log(error)
+        }
+    }
     return (
         <Container>
             <Navbar />
@@ -210,7 +218,6 @@ const Cart = () => {
                     <Info>
                         {cart.products?.map((product) =>
                             <Product>
-                                {/* {console.log(product.amount)} */}
                                 <ProductDetail>
                                     <Image src={product.img} />
                                     <Details>
@@ -257,7 +264,7 @@ const Cart = () => {
                             <SummaryItemPrice> &#x20B9; {cart.total} </SummaryItemPrice >
                         </SummaryItem>
 
-                            
+                        <Button onClick={handleCheckout}> Checkout Now </Button>
                     </Summary>
                 </Bottom>
             </Wrapper>
